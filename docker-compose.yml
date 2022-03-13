@@ -1,0 +1,40 @@
+version: "3.1"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm start
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/app
+    env_file:
+     - .env
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    environment:
+      WAIT_HOSTS: mongodb:27017
+    networks:
+      - node-webapp-network
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    volumes:
+      - ~/mongo:/data/db
+    ports:
+      - 27017:27017
+    env_file:
+     - .env
+    networks:
+      - node-webapp-network
+
+networks:
+  node-webapp-network:
+    driver: bridge
