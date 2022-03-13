@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: npm start
+    command: yarn dev
     restart: always
     ports:
       - 3000:3000
