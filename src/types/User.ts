@@ -1,5 +1,5 @@
 export default interface User {
     username: string;
-    password: string;
+    password: string | undefined;
     createdAt: Date;
 }

@@ -13,7 +13,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.2",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.22.1",
