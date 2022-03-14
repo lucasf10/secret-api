@@ -1,6 +1,8 @@
-import express, { Express } from 'express'
+import express, { Express, Request, Response } from 'express'
 import bodyParser from 'body-parser'
+
 import authController from '@controllers/authController'
+import postController from '@controllers/postController'
 
 const PORT: number = 3000
 const HOST: string = '0.0.0.0'
@@ -10,10 +12,11 @@ const app: Express = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
-(authController)(app)
+(authController)(app);
+(postController)(app)
 
-app.get('/', (req, res) => {
-  res.send('Hello World')
+app.get('/', (req: Request, res: Response): Response => {
+  return res.status(200).send('Hello World')
 })
 
 app.listen(PORT, HOST)

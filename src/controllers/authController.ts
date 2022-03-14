@@ -36,7 +36,7 @@ router.post('/authenticate', async (req: Request, res: Response): Promise<Respon
 
   user.password = undefined
 
-  res.status(200).send({ user, token: generateToken({ id: user.id }) })
+  return res.status(200).send({ user, token: generateToken({ id: user.id }) })
 })
 
 export default (app: Express) => app.use('/auth', router)
