@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 
 export const generateToken = (params = {}) => {
-  const { SECRET } = process.env
+  const { SECRET, SECRET_EXPIRATION } = process.env
   return jwt.sign(params, SECRET, {
-    expiresIn: 86400
+    expiresIn: SECRET_EXPIRATION
   })
 }

@@ -22,7 +22,8 @@
     "paths": {
       "@controllers/*": ["./src/controllers/*"],
       "@models/*": ["./src/models/*"],
-      "@database/*": ["./src/database/*"]
+      "@database/*": ["./src/database/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": [
