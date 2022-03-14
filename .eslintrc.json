@@ -16,6 +16,6 @@
         "@typescript-eslint"
     ],
     "rules": {
-
+        "curly": ["error", "multi-or-nest"]
     }
 }
