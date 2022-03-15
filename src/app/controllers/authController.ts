@@ -47,7 +47,7 @@ router.post('/authenticate', async (req: Request, res: Response): Promise<Respon
 })
 
 router.post('/forgot_password', async (req: Request, res: Response): Promise<Response> => {
-  const { username } = req.body;
+  const { username } = req.body
 
   try {
     const user: UserType = await User.findOne({ username })
@@ -61,7 +61,7 @@ router.post('/forgot_password', async (req: Request, res: Response): Promise<Res
     now.setHours(now.getHours() + 1)
 
     await User.findByIdAndUpdate(user.id, {
-      '$set': {
+      $set: {
         passwordResetToken: token,
         passwordResetExpires: now
       }
@@ -74,11 +74,11 @@ router.post('/forgot_password', async (req: Request, res: Response): Promise<Res
       context: { token }
     }, (err) => {
       console.log(err)
-      if (err) return res.status(400).send({ error: 'Cannot send forgot password email.'})
+      if (err) return res.status(400).send({ error: 'Cannot send forgot password email.' })
       return res.send()
     })
   } catch (err) {
-    return res.status(400).send({ error: 'Error on forgot password, try again.'})
+    return res.status(400).send({ error: 'Error on forgot password, try again.' })
   }
 })
 
@@ -105,7 +105,7 @@ router.post('/reset_password', async (req: Request, res: Response): Promise<Resp
 
     return res.status(200).send()
   } catch (err) {
-    return res.status(400).send({ error: 'Cannot reset password, try again.'})
+    return res.status(400).send({ error: 'Cannot reset password, try again.' })
   }
 })
 

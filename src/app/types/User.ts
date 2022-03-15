@@ -1,10 +1,10 @@
-import { Document } from "mongoose";
+import { Document, Types } from 'mongoose'
 
 export default interface User extends Document {
-    id: string;
+    id: Types.ObjectId;
     username: string;
     email: string;
-    password: string | undefined;
+    password?: string;
     passwordResetToken: string;
     passwordResetExpires: Date;
     createdAt: Date;
