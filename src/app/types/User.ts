@@ -1,4 +1,6 @@
-export default interface User {
+import { Document } from "mongoose";
+
+export default interface User extends Document {
     id: string;
     username: string;
     email: string;
