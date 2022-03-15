@@ -7,7 +7,7 @@
     "module": "commonjs",
     "rootDir": "./src",
     "typeRoots": [
-      "src/types",
+      "src/app/types",
       "./node_modules/@types"
     ],
     "resolveJsonModule": true,
@@ -20,10 +20,10 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@controllers/*": ["./src/controllers/*"],
-      "@models/*": ["./src/models/*"],
+      "@controllers/*": ["src/app/controllers/*"],
+      "@models/*": ["./src/app/models/*"],
       "@database/*": ["./src/database/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/app/utils/*"]
     }
   },
   "include": [

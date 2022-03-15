@@ -9,7 +9,10 @@ const router: Router = express.Router()
 
 router.post('/register', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { username } = req.body
+    const { username, email } = req.body
+
+    if (await User.exists({ email: email }))
+      return res.status(422).send({ error: 'This e-mail is already taken.' })
 
     if (await User.exists({ username: username }))
       return res.status(422).send({ error: 'This username is already taken.' })
@@ -35,6 +38,8 @@ router.post('/authenticate', async (req: Request, res: Response): Promise<Respon
     return res.status(400).send({ error: 'Invalid password' })
 
   user.password = undefined
+
+  console.log(user.id)
 
   return res.status(200).send({ user, token: generateToken({ id: user.id }) })
 })
