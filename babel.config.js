@@ -16,7 +16,9 @@ module.exports = {
         '@database': './src/database',
         '@models': './app/src/models',
         '@controllers': './src/app/controllers',
-        '@utils': './src/app/utils'
+        '@utils': './src/app/utils',
+        '@config': './src/config',
+        '@modules': './src/modules'
       }
     }]
   ],

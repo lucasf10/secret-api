@@ -1,5 +1,7 @@
 import express, { Request, Response, Router, Express } from 'express'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+import mailer from '../../modules/mailer'
 
 import User from '@models/user'
 import UserType from '../types/User'
@@ -11,10 +13,10 @@ router.post('/register', async (req: Request, res: Response): Promise<Response> 
   try {
     const { username, email } = req.body
 
-    if (await User.exists({ email: email }))
+    if (await User.exists({ email }))
       return res.status(422).send({ error: 'This e-mail is already taken.' })
 
-    if (await User.exists({ username: username }))
+    if (await User.exists({ username }))
       return res.status(422).send({ error: 'This username is already taken.' })
 
     const user: UserType = await User.create(req.body)
@@ -42,6 +44,42 @@ router.post('/authenticate', async (req: Request, res: Response): Promise<Respon
   console.log(user.id)
 
   return res.status(200).send({ user, token: generateToken({ id: user.id }) })
+})
+
+router.post('/forgot_password', async (req: Request, res: Response): Promise<Response> => {
+  const { username } = req.body;
+
+  try {
+    const user: UserType = await User.findOne({ username })
+
+    if (!user)
+      return res.status(400).send({ error: 'User not found' })
+
+    const token = crypto.randomBytes(20).toString('hex')
+
+    const now = new Date()
+    now.setHours(now.getHours() + 1)
+
+    await User.findByIdAndUpdate(user.id, {
+      '$set': {
+        passwordResetToken: token,
+        passwordResetExpires: now
+      }
+    })
+
+    mailer.sendMail({
+      to: user.email,
+      from: 'lucas@test.com',
+      template: 'auth/forgot_password',
+      context: { token }
+    }, (err) => {
+      console.log(err)
+      if (err) return res.status(400).send({ error: 'Cannot send forgot password email.'})
+      return res.send()
+    })
+  } catch (err) {
+    return res.status(400).send({ error: 'Error on forgot password, try again.'})
+  }
 })
 
 export default (app: Express) => app.use('/auth', router)

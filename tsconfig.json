@@ -23,7 +23,9 @@
       "@controllers/*": ["src/app/controllers/*"],
       "@models/*": ["./src/app/models/*"],
       "@database/*": ["./src/database/*"],
-      "@utils/*": ["./src/app/utils/*"]
+      "@config/*": ["./src/config/*"],
+      "@utils/*": ["./src/app/utils/*"],
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": [
