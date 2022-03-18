@@ -30,6 +30,10 @@ router.delete('/:commentId', async (req: Request, res: Response): Promise<Respon
     if (String(comment.createdBy) !== req.userId)
       return res.status(400).send({ error: 'User not allowed deleting this comment.' })
 
+    await Post.updateOne(
+      { _id: comment.post },
+      { $pull: { comments: comment.id } }
+    )
     comment.delete()
 
     return res.status(204).send()
