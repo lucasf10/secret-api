@@ -18,7 +18,6 @@ export default (req: Request, res: Response, next: NextFunction): Response => {
     return res.status(401).send({ error: 'Token malformatted' })
 
   const { SECRET } = process.env
-  console.log(`SECRET: ${SECRET}`)
   jwt.verify(token, SECRET, (err, decoded) => {
     if (err) return res.status(401).send({ error: 'Token invalid' })
 

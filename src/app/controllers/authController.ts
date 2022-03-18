@@ -41,8 +41,6 @@ router.post('/authenticate', async (req: Request, res: Response): Promise<Respon
 
   user.password = undefined
 
-  console.log(user.id)
-
   return res.status(200).send({ user, token: generateToken({ id: user.id }) })
 })
 

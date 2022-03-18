@@ -8,4 +8,8 @@ export default interface Post extends Document {
     colorCode: string;
     likeAmount: Number;
     createdAt: Date;
+    location: {
+        type: string;
+        location: [number]
+    }
 }

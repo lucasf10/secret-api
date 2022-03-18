@@ -8,7 +8,7 @@ router.use(authMiddleware)
 
 router.get('/', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const posts = await Post.find().populate(['comments'])
+    const posts = await Post.find() // .populate(['comments'])
 
     return res.status(200).send({ posts })
   } catch (err) {
@@ -18,12 +18,11 @@ router.get('/', async (req: Request, res: Response): Promise<Response> => {
 
 router.get('/:postId', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const post = await Post.find(req.params.postId).populate(['comments'])
-
-    await post.save()
+    const post: any = await Post.findById(req.params.postId) // .populate(['comments'])
 
     return res.status(200).send({ post })
   } catch (err) {
+    console.log(err)
     return res.status(400).send({ error: 'Error loading post.' })
   }
 })
@@ -38,13 +37,14 @@ router.post('/', async (req: Request, res: Response): Promise<Response> => {
   }
 })
 
-router.put('/:postId', async (req: Request, res: Response): Promise<Response> => {
-
-})
-
 router.delete('/:postId', async (req: Request, res: Response): Promise<Response> => {
   try {
-    await Post.findByIdAndRemove(req.params.postId)
+    const post = await Post.findById(req.params.postId)
+
+    if (String(post.createdBy) !== req.userId)
+      return res.status(400).send({ error: 'User not allowed deleting this post.' })
+
+    post.delete()
 
     return res.status(204).send()
   } catch (err) {
