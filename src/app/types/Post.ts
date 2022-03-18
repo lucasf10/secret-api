@@ -12,4 +12,5 @@ export default interface Post extends Document {
         type: string;
         location: [number]
     }
+    city: string;
 }

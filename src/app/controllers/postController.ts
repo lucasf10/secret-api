@@ -3,6 +3,7 @@ import authMiddleware from '../middlewares/auth'
 
 import Post from '@models/post'
 import User from '@models/user'
+import { getCity } from '@utils/functions'
 
 const router: Router = express.Router()
 router.use(authMiddleware)
@@ -71,7 +72,9 @@ router.post('/:postId/dislike', async (req: Request, res: Response): Promise<Res
 
 router.post('/', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const post = await Post.create({ ...req.body, createdBy: req.userId })
+    const { location } = req.body
+    const city = await getCity(location.coordinates[0], location.coordinates[1])
+    const post = await Post.create({ ...req.body, createdBy: req.userId, city })
 
     return res.status(201).send({ post })
   } catch (err) {

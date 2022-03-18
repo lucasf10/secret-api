@@ -13,6 +13,9 @@ const PostSchema: Schema = new mongoose.Schema<PostType>({
     type: LocationSchema,
     required: true
   },
+  city: {
+    type: String
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
