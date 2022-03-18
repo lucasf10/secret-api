@@ -8,4 +8,5 @@ export default interface User extends Document {
     passwordResetToken: string;
     passwordResetExpires: Date;
     createdAt: Date;
+    likedPosts: [Types.ObjectId];
 }

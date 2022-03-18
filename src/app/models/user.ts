@@ -33,7 +33,11 @@ const UserSchema: Schema = new mongoose.Schema<UserType>({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  likedPosts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post'
+  }]
 })
 
 UserSchema.pre('save', async function (next) {

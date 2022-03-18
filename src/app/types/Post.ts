@@ -6,7 +6,7 @@ export default interface Post extends Document {
     createdBy: Types.ObjectId;
     comments: Types.ObjectId[];
     colorCode: string;
-    likeAmount: Number;
+    likeAmount: number;
     createdAt: Date;
     location: {
         type: string;
