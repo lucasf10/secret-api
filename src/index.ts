@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 (commentController)(app)
 
 app.get('/', (req: Request, res: Response): Response => {
-  return res.status(200).send('Hello World')
+  return res.status(200).send('Server is up!')
 })
 
 app.listen(PORT, HOST)
