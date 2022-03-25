@@ -10,7 +10,12 @@ router.use(authMiddleware)
 
 router.get('/', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const posts = await Post.find() // .populate(['comments'])
+    const limit = req.query.limit || 10
+    const offset = req.query.offset || 0
+    const posts = await Post.find()
+      .skip(offset as number)
+      .limit(limit as number)
+      .sort('-createdAt') // .populate(['comments'])
 
     return res.status(200).send({ posts })
   } catch (err) {
