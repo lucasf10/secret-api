@@ -48,6 +48,7 @@ router.get('/:postId', async (req: Request, res: Response): Promise<Response> =>
         colorCode: 1,
         city: 1,
         likeAmount: 1,
+        likedByUser: 1,
         comments: {
           $map: {
             input: '$commentsUnwided',
