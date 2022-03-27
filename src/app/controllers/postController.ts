@@ -1,5 +1,6 @@
 import express, { Request, Response, Router, Express } from 'express'
 import authMiddleware from '../middlewares/auth'
+import mongoose from 'mongoose'
 
 import Post from '@models/post'
 import User from '@models/user'
@@ -10,22 +11,62 @@ router.use(authMiddleware)
 
 router.get('/', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const limit = req.query.limit || 10
-    const offset = req.query.offset || 0
-    const posts = await Post.find()
-      .skip(offset as number)
-      .limit(limit as number)
-      .sort('-createdAt') // .populate(['comments'])
+    const limit = Number(req.query.limit) || 10
+    const offset = Number(req.query.offset) || 0
+    const user = await User.findById(req.userId)
+    const posts = await Post.aggregate()
+      .addFields({ likedByUser: { $in: ['$_id', user.likedPosts] } })
+      .skip(offset)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .project({ createdBy: 0, location: 0, createdAt: 0, __v: 0 })
 
     return res.status(200).send({ posts })
   } catch (err) {
+    console.log(err)
     return res.status(400).send({ error: 'Error loading posts.' })
   }
 })
 
 router.get('/:postId', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const post = await Post.findById(req.params.postId) // .populate(['comments'])
+    const userId = new mongoose.Types.ObjectId(req.userId)
+    const user = await User.findById(userId)
+    const postQuery = await Post.aggregate()
+      .match({ _id: new mongoose.Types.ObjectId(req.params.postId) })
+      .lookup({
+        from: 'comments',
+        localField: 'comments',
+        foreignField: '_id',
+        as: 'commentsUnwided'
+      })
+      .addFields({
+        likedByUser: { $in: ['$_id', user.likedPosts] }
+      })
+      .project({
+        text: 1,
+        colorCode: 1,
+        city: 1,
+        likeAmount: 1,
+        comments: {
+          $map: {
+            input: '$commentsUnwided',
+            as: 'comment',
+            in: {
+              id: '$$comment._id',
+              text: '$$comment.text',
+              createdByUser: {
+                $eq: ['$$comment.createdBy', userId]
+              }
+            }
+          }
+        }
+      })
+
+    const post = postQuery?.length > 0 && postQuery[0]
+
+    if (!post)
+      return res.status(404).send({ error: 'Post not found' })
 
     return res.status(200).send({ post })
   } catch (err) {
