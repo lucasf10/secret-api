@@ -38,7 +38,10 @@ router.get('/:postId', async (req: Request, res: Response): Promise<Response> =>
         from: 'comments',
         localField: 'comments',
         foreignField: '_id',
-        as: 'commentsUnwided'
+        as: 'commentsUnwided',
+        pipeline: [{
+          $sort: { createdAt: -1 }
+        }]
       })
       .addFields({
         likedByUser: { $in: ['$_id', user.likedPosts] }
