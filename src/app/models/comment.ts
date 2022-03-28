@@ -21,7 +21,11 @@ const CommentSchema: Schema = new mongoose.Schema<CommentType>({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  likedBy: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 })
 
 const Comment = mongoose.model<CommentType>('Comment', CommentSchema)

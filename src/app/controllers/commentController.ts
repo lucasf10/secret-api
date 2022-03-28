@@ -1,5 +1,6 @@
 import express, { Request, Response, Router, Express } from 'express'
 import authMiddleware from '../middlewares/auth'
+import { Types } from 'mongoose'
 
 import Comment from '@models/comment'
 import Post from '@models/post'
@@ -39,6 +40,45 @@ router.delete('/:commentId', async (req: Request, res: Response): Promise<Respon
     return res.status(204).send()
   } catch (err) {
     return res.status(400).send({ error: 'Error deleting comment.' })
+  }
+})
+
+router.post('/:commentId/like', async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const comment = await Comment.findById(req.params.commentId)
+    const userId = new Types.ObjectId(req.userId)
+
+    if (comment.likedBy.indexOf(userId) !== -1)
+      return res.status(400).send({ error: 'You already liked this post' })
+
+    await Comment.updateOne(
+      { _id: comment.id },
+      { $push: { likedBy: userId } }
+    )
+
+    return res.status(204).send()
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send({ error: 'Error liking comment.' })
+  }
+})
+
+router.post('/:postId/dislike', async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const comment = await Comment.findById(req.params.postId)
+    const userId = new Types.ObjectId(req.userId)
+
+    if (comment.likedBy.indexOf(userId) === -1)
+      return res.status(400).send({ error: 'You didn\'t like this post yet' })
+
+    await Comment.updateOne(
+      { _id: comment.id },
+      { $pull: { likedBy: userId } }
+    )
+
+    return res.status(204).send()
+  } catch (err) {
+    return res.status(400).send({ error: 'Error disliking comment.' })
   }
 })
 

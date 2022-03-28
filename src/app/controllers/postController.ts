@@ -54,8 +54,15 @@ router.get('/:postId', async (req: Request, res: Response): Promise<Response> =>
             input: '$commentsUnwided',
             as: 'comment',
             in: {
-              id: '$$comment._id',
+              _id: '$$comment._id',
               text: '$$comment.text',
+              createdAt: '$$comment.createdAt',
+              likeAmount: {
+                $size: { $ifNull: ['$$comment.likedBy', []] }
+              },
+              likedByUser: {
+                $in: [userId, { $ifNull: ['$$comment.likedBy', []] }]
+              },
               createdByUser: {
                 $eq: ['$$comment.createdBy', userId]
               }
@@ -71,6 +78,7 @@ router.get('/:postId', async (req: Request, res: Response): Promise<Response> =>
 
     return res.status(200).send({ post })
   } catch (err) {
+    console.log(err)
     return res.status(400).send({ error: 'Error loading post.' })
   }
 })
@@ -92,7 +100,7 @@ router.post('/:postId/like', async (req: Request, res: Response): Promise<Respon
 
     return res.status(204).send()
   } catch (err) {
-    return res.status(400).send({ error: 'Error loading post.' })
+    return res.status(400).send({ error: 'Error liking post.' })
   }
 })
 
@@ -113,7 +121,7 @@ router.post('/:postId/dislike', async (req: Request, res: Response): Promise<Res
 
     return res.status(204).send()
   } catch (err) {
-    return res.status(400).send({ error: 'Error loading post.' })
+    return res.status(400).send({ error: 'Error disliking post.' })
   }
 })
 

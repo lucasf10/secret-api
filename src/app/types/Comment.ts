@@ -6,4 +6,5 @@ export default interface Comment extends Document {
     createdBy: Types.ObjectId;
     post: Types.ObjectId;
     createdAt: Date;
+    likedBy: Types.ObjectId[];
 }
