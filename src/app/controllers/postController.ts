@@ -11,10 +11,12 @@ router.use(authMiddleware)
 
 router.get('/', async (req: Request, res: Response): Promise<Response> => {
   try {
+    const city = req.query.city
     const limit = Number(req.query.limit) || 10
     const offset = Number(req.query.offset) || 0
     const user = await User.findById(req.userId)
     const posts = await Post.aggregate()
+      .match({ city })
       .addFields({ likedByUser: { $in: ['$_id', user.likedPosts] } })
       .sort({ createdAt: -1 })
       .skip(offset)
