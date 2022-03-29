@@ -16,9 +16,9 @@ router.get('/', async (req: Request, res: Response): Promise<Response> => {
     const user = await User.findById(req.userId)
     const posts = await Post.aggregate()
       .addFields({ likedByUser: { $in: ['$_id', user.likedPosts] } })
+      .sort({ createdAt: -1 })
       .skip(offset)
       .limit(limit)
-      .sort({ createdAt: -1 })
       .project({ createdBy: 0, location: 0, createdAt: 0, __v: 0 })
 
     return res.status(200).send({ posts })
