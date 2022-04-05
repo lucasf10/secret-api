@@ -6,6 +6,7 @@ export default interface Post extends Document {
     createdBy: Types.ObjectId;
     comments: Types.ObjectId[];
     colorCode: string;
+    textColor: string;
     likeAmount: number;
     createdAt: Date;
     location: {
@@ -13,4 +14,5 @@ export default interface Post extends Document {
         location: [number]
     }
     city: string;
+    backgroundImage: Buffer
 }

@@ -51,9 +51,11 @@ router.get('/:postId', async (req: Request, res: Response): Promise<Response> =>
       .project({
         text: 1,
         colorCode: 1,
+        textColor: 1,
         city: 1,
         likeAmount: 1,
         likedByUser: 1,
+        backgroundImage: 1,
         comments: {
           $map: {
             input: '$commentsUnwided',
@@ -132,9 +134,15 @@ router.post('/:postId/dislike', async (req: Request, res: Response): Promise<Res
 
 router.post('/', async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { location } = req.body
+    const { location, backgroundImage } = req.body
+    const backgroundImageFile = Buffer.from(backgroundImage, 'base64')
     const city = await getCity(location.coordinates[0], location.coordinates[1])
-    const post = await Post.create({ ...req.body, createdBy: req.userId, city })
+    const post = await Post.create({
+      ...req.body,
+      backgroundImage: backgroundImageFile,
+      createdBy: req.userId,
+      city
+    })
 
     return res.status(201).send({ post })
   } catch (err) {

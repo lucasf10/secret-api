@@ -33,9 +33,16 @@ const PostSchema: Schema = new mongoose.Schema<PostType>({
     type: String,
     default: '#000000'
   },
+  textColor: {
+    type: String,
+    default: '#FFFFFF'
+  },
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  backgroundImage: {
+    type: Buffer
   }
 })
 
