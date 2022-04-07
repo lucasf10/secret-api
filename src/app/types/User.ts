@@ -9,4 +9,5 @@ export default interface User extends Document {
     passwordResetExpires: Date;
     createdAt: Date;
     likedPosts: [Types.ObjectId];
+    firebaseToken: string;
 }

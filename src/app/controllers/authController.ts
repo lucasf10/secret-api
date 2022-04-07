@@ -21,6 +21,7 @@ router.post('/register', async (req: Request, res: Response): Promise<Response> 
 
     const user: UserType = await User.create(req.body)
     user.password = undefined
+    user.firebaseToken = undefined
 
     return res.status(201).send({ user, token: generateToken({ id: user.id }) })
   } catch (err) {
@@ -30,18 +31,23 @@ router.post('/register', async (req: Request, res: Response): Promise<Response> 
 })
 
 router.post('/authenticate', async (req: Request, res: Response): Promise<Response> => {
-  const { username, password } = req.body
-  const user: UserType = await User.findOne({ username }).select('+password')
+  try {
+    const { username, password } = req.body
+    const user: UserType = await User.findOne({ username }).select('+password')
 
-  if (!user)
-    return res.status(400).send({ error: 'User not found' })
+    if (!user)
+      return res.status(400).send({ error: 'User not found' })
 
-  if (!await bcrypt.compare(password, user.password))
-    return res.status(400).send({ error: 'Invalid password' })
+    if (!await bcrypt.compare(password, user.password))
+      return res.status(400).send({ error: 'Invalid password' })
 
-  user.password = undefined
+    user.password = undefined
+    user.firebaseToken = undefined
 
-  return res.status(200).send({ user, token: generateToken({ id: user.id }) })
+    return res.status(200).send({ user, token: generateToken({ id: user.id }) })
+  } catch (err) {
+    return res.status(400).send({ error: 'Error on authentication, try again.' })
+  }
 })
 
 router.post('/forgot_password', async (req: Request, res: Response): Promise<Response> => {

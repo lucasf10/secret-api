@@ -37,7 +37,10 @@ const UserSchema: Schema = new mongoose.Schema<UserType>({
   likedPosts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
-  }]
+  }],
+  firebaseToken: {
+    type: String
+  }
 })
 
 UserSchema.pre('save', async function (next) {
