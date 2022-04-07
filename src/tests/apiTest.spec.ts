@@ -1,22 +1,10 @@
 import supertest from 'supertest'
-import mongoose from 'mongoose'
 import { app, server } from '../index'
 
-import { MongoMemoryServer } from 'mongodb-memory-server'
-
 const request = supertest(app)
-let mongod: MongoMemoryServer
 
 describe('API test', () => {
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create()
-    const dbUrl = mongod.getUri()
-    await mongoose.connect(dbUrl, {})
-  })
-
-  afterAll(async () => {
-    await mongoose.connection.close()
-    await mongod.stop()
+  afterAll(() => {
     server.close()
   })
 
