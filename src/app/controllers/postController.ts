@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 
 import Post from '@models/post'
 import User from '@models/user'
-import { getCity } from '@utils/functions'
+import { getCity, sendNotification } from '@utils/functions'
 
 const router: Router = express.Router()
 router.use(authMiddleware)
@@ -94,6 +94,7 @@ router.post('/:postId/like', async (req: Request, res: Response): Promise<Respon
   try {
     const post = await Post.findById(req.params.postId)
     const user = await User.findById(req.userId)
+    const postOwner = await User.findById(post.createdBy)
 
     if (user.likedPosts.indexOf(post.id) !== -1)
       return res.status(400).send({ error: 'You already liked this post' })
@@ -102,8 +103,17 @@ router.post('/:postId/like', async (req: Request, res: Response): Promise<Respon
       { _id: req.userId },
       { $push: { likedPosts: post.id } }
     )
+
     post.likeAmount += 1
     post.save()
+
+    if (postOwner.firebaseToken && postOwner.id !== user.id) {
+      sendNotification(
+        postOwner.firebaseToken,
+        'Someone just liked your secret.',
+        'Go check it out!'
+      )
+    }
 
     return res.status(204).send()
   } catch (err) {
@@ -135,17 +145,19 @@ router.post('/:postId/dislike', async (req: Request, res: Response): Promise<Res
 router.post('/', async (req: Request, res: Response): Promise<Response> => {
   try {
     const { location, backgroundImage } = req.body
-    const backgroundImageFile = Buffer.from(backgroundImage, 'base64')
     const city = await getCity(location.coordinates[0], location.coordinates[1])
     const post = await Post.create({
       ...req.body,
-      backgroundImage: backgroundImageFile,
+      backgroundImage: backgroundImage
+        ? Buffer.from(backgroundImage, 'base64')
+        : undefined,
       createdBy: req.userId,
       city
     })
 
     return res.status(201).send({ post })
   } catch (err) {
+    console.log(err)
     return res.status(400).send({ error: 'Error creating new post.' })
   }
 })
