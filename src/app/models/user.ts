@@ -1,6 +1,5 @@
-import mongoose from '@database/index'
 import bcrypt from 'bcryptjs'
-import { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 import UserType from '../types/User'
 
