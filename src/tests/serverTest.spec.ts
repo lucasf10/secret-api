@@ -3,7 +3,7 @@ import { app, server } from '../index'
 
 const request = supertest(app)
 
-describe('API test', () => {
+describe('Server test', () => {
   afterAll(() => {
     server.close()
   })
