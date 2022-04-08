@@ -25,7 +25,6 @@ router.post('/register', async (req: Request, res: Response): Promise<Response> 
 
     return res.status(201).send({ user, token: generateToken({ id: user.id }) })
   } catch (err) {
-    console.error(err)
     return res.status(400).send({ error: 'Registration failed' })
   }
 })

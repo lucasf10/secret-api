@@ -35,7 +35,7 @@ describe('Auth API test', () => {
     server.close()
   })
 
-  describe('GET /auth/register', () => {
+  describe('POST /auth/register', () => {
     it('should register a new user', async () => {
       const res = await request.post('/auth/register').send(newUserData)
       const token: string = res.body.token
@@ -45,8 +45,8 @@ describe('Auth API test', () => {
       expect(token).not.toBeNull()
       expect(user.id).not.toBeNull()
       expect(user.createdAt).not.toBeNull()
-      expect(user.email).toBe(newUserData.email)
-      expect(user.username).toBe(newUserData.username)
+      expect(user.email).toEqual(newUserData.email)
+      expect(user.username).toEqual(newUserData.username)
       expect(user.likedPosts).toEqual([])
     })
 
@@ -67,7 +67,9 @@ describe('Auth API test', () => {
 
       expect(res.status).toBe(422)
     })
+  })
 
+  describe('POST /auth/authenticate', () => {
     it('should authenticate a user', async () => {
       const res = await request.post('/auth/authenticate').send({
         username: registeredUserData.username,
@@ -80,8 +82,8 @@ describe('Auth API test', () => {
       expect(token).not.toBeNull()
       expect(user.id).not.toBeNull()
       expect(user.createdAt).not.toBeNull()
-      expect(user.email).toBe(registeredUserData.email)
-      expect(user.username).toBe(registeredUserData.username)
+      expect(user.email).toEqual(registeredUserData.email)
+      expect(user.username).toEqual(registeredUserData.username)
     })
 
     it('should not authenticate an user that does not exist', async () => {
