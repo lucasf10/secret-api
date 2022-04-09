@@ -3,9 +3,11 @@ import fs from 'fs'
 import path from 'path'
 import mongoose from 'mongoose'
 import PostType from 'src/app/types/Post'
+import UserType from 'src/app/types/User'
 import supertest from 'supertest'
 import { app, server } from '../../index'
 import Post from '@models/post'
+import User from '@models/user'
 
 const request = supertest(app)
 let mongod: MongoMemoryServer
@@ -15,6 +17,7 @@ describe('Post API test', () => {
   let token2: string
   let postMadrid: PostType
   let postVV: PostType
+  let user1: UserType
 
   const newPostData = {
     text: 'Text',
@@ -62,10 +65,10 @@ describe('Post API test', () => {
     const resUser2 = await request.post('/auth/register').send(newUserData2)
     token = resUser1.body.token
     token2 = resUser2.body.token
-    const userId1 = resUser1.body.user._id
+    user1 = resUser1.body.user
 
-    postMadrid = await Post.create({ ...postData1, createdBy: userId1, city: 'Madrid' })
-    postVV = await Post.create({ ...postData2, createdBy: userId1, city: 'Vila Velha' })
+    postMadrid = await Post.create({ ...postData1, createdBy: user1._id, city: 'Madrid' })
+    postVV = await Post.create({ ...postData2, createdBy: user1._id, city: 'Vila Velha' })
   })
 
   afterAll(async () => {
@@ -164,8 +167,10 @@ describe('Post API test', () => {
         .post(`/posts/${postVV.id}/like`)
         .set('Authorization', `Bearer ${token}`)
       const updatedPostVV = await Post.findById(postVV.id)
+      const updatedUser = await User.findById(user1._id)
       expect(res.status).toBe(204)
       expect(updatedPostVV.likeAmount).toBe(1)
+      expect(updatedUser.likedPosts.length).toBe(1)
     })
 
     it('should not be allowed to like a post twice', async () => {
@@ -184,8 +189,10 @@ describe('Post API test', () => {
         .post(`/posts/${postVV.id}/dislike`)
         .set('Authorization', `Bearer ${token}`)
       const updatedPostVV = await Post.findById(postVV.id)
+      const updatedUser = await User.findById(user1._id)
       expect(res.status).toBe(204)
       expect(updatedPostVV.likeAmount).toBe(0)
+      expect(updatedUser.likedPosts.length).toBe(0)
     })
 
     it('should not be allowed to dislike a post that was not liked by the user', async () => {
