@@ -42,9 +42,9 @@ describe('Auth API test', () => {
       const user: UserType = res.body.user
 
       expect(res.status).toBe(201)
-      expect(token).not.toBeNull()
-      expect(user.id).not.toBeNull()
-      expect(user.createdAt).not.toBeNull()
+      expect(token).not.toBeUndefined()
+      expect(user._id).not.toBeUndefined()
+      expect(user.createdAt).not.toBeUndefined()
       expect(user.email).toEqual(newUserData.email)
       expect(user.username).toEqual(newUserData.username)
       expect(user.likedPosts).toEqual([])
@@ -79,9 +79,9 @@ describe('Auth API test', () => {
       const user: UserType = res.body.user
 
       expect(res.status).toBe(200)
-      expect(token).not.toBeNull()
-      expect(user.id).not.toBeNull()
-      expect(user.createdAt).not.toBeNull()
+      expect(token).not.toBeUndefined()
+      expect(user._id).not.toBeUndefined()
+      expect(user.createdAt).not.toBeUndefined()
       expect(user.email).toEqual(registeredUserData.email)
       expect(user.username).toEqual(registeredUserData.username)
     })
