@@ -108,6 +108,15 @@ describe('Post API test', () => {
       expect(res.status).toBe(200)
       expect(res.body.posts).toHaveLength(3)
     })
+
+    it('should get only 2 posts', async () => {
+      const res = await request
+        .get('/posts?city=Vila Velha&limit=2')
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(res.status).toBe(200)
+      expect(res.body.posts).toHaveLength(2)
+    })
   })
 
   describe('GET /posts/:postId', () => {
@@ -158,6 +167,8 @@ describe('Post API test', () => {
       expect(res.status).toBe(204)
       expect(updatedPostVV.likeAmount).toBe(1)
       expect(updatedUser.likedPosts.length).toBe(1)
+
+      // Check if its in users list as well
     })
 
     it('should not be allowed to like a post twice', async () => {
@@ -180,6 +191,8 @@ describe('Post API test', () => {
       expect(res.status).toBe(204)
       expect(updatedPostVV.likeAmount).toBe(0)
       expect(updatedUser.likedPosts.length).toBe(0)
+
+      // Check if its in users list as well
     })
 
     it('should not be allowed to dislike a post that was not liked by the user', async () => {
