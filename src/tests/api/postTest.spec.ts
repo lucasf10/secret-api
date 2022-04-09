@@ -1,16 +1,13 @@
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import fs from 'fs'
 import path from 'path'
-import mongoose from 'mongoose'
 import PostType from 'src/app/types/Post'
 import UserType from 'src/app/types/User'
 import supertest from 'supertest'
-import { app, server } from '../../index'
+import { app } from '../../index'
 import Post from '@models/post'
 import User from '@models/user'
 
 const request = supertest(app)
-let mongod: MongoMemoryServer
 
 describe('Post API test', () => {
   let token: string
@@ -47,10 +44,6 @@ describe('Post API test', () => {
   }
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create()
-    const dbUrl = mongod.getUri()
-    await mongoose.connect(dbUrl, {})
-
     const newUserData1 = {
       username: 'test_user',
       email: 'user@test.com',
@@ -69,12 +62,6 @@ describe('Post API test', () => {
 
     postMadrid = await Post.create({ ...postData1, createdBy: user1._id, city: 'Madrid' })
     postVV = await Post.create({ ...postData2, createdBy: user1._id, city: 'Vila Velha' })
-  })
-
-  afterAll(async () => {
-    await mongod.stop()
-    await mongoose.connection.close()
-    server.close()
   })
 
   describe('POST /posts/', () => {

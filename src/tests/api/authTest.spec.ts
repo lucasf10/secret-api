@@ -1,12 +1,9 @@
 import User from '@models/user'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
 import UserType from 'src/app/types/User'
 import supertest from 'supertest'
-import { app, server } from '../../index'
+import { app } from '../../index'
 
 const request = supertest(app)
-let mongod: MongoMemoryServer
 
 describe('Auth API test', () => {
   const registeredUserData = {
@@ -22,17 +19,7 @@ describe('Auth API test', () => {
   }
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create()
-    const dbUrl = mongod.getUri()
-    await mongoose.connect(dbUrl, {})
-
     User.create(registeredUserData)
-  })
-
-  afterAll(async () => {
-    await mongod.stop()
-    await mongoose.connection.close()
-    server.close()
   })
 
   describe('POST /auth/register', () => {

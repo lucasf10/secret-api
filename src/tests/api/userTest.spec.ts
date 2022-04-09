@@ -1,21 +1,13 @@
 import User from '@models/user'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
 import UserType from 'src/app/types/User'
 import supertest from 'supertest'
-import { app, server } from '../../index'
+import { app } from '../../index'
 
 const request = supertest(app)
-let mongod: MongoMemoryServer
-
 describe('Users API test', () => {
   let registeredUser: UserType
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create()
-    const dbUrl = mongod.getUri()
-    await mongoose.connect(dbUrl, {})
-
     const registeredUserData = {
       email: 'registered@mail.com',
       username: 'registered',
@@ -23,12 +15,6 @@ describe('Users API test', () => {
     }
 
     registeredUser = await User.create(registeredUserData)
-  })
-
-  afterAll(async () => {
-    await mongod.stop()
-    await mongoose.connection.close()
-    server.close()
   })
 
   describe('POST /users/:userId/set_firebase_token', () => {
