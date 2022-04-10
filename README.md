@@ -6,7 +6,7 @@ This repo is the implementation of the backend and API of the application.
 
 For the React Native application that consumes this API, you should check the [secret_app repo](https://github.com/lucasf10/secret_app). 
 
-## How to run this website
+## How to run this API
 
 1. Create your own **.env.local** file based on **.env.example**
 
