@@ -67,6 +67,47 @@ describe('Comments API test', () => {
     })
   })
 
+  describe('POST /comment/:commentId/like', () => {
+    it('should like a comment', async () => {
+      const res = await request
+        .post(`/comment/${comment._id}/like`)
+        .set('Authorization', `Bearer ${token}`)
+      const updatedComment = await Comment.findById(comment._id)
+      expect(res.status).toBe(204)
+      expect(updatedComment.likedBy).toHaveLength(1)
+      expect(updatedComment.likedBy).toContainEqual(new Types.ObjectId(user1._id))
+    })
+
+    it('should not be allowed to like a comment twice', async () => {
+      const res = await request
+        .post(`/comment/${comment._id}/like`)
+        .set('Authorization', `Bearer ${token}`)
+      const updatedComment = await Comment.findById(comment._id)
+      expect(res.status).toBe(400)
+      expect(updatedComment.likedBy).toHaveLength(1)
+    })
+  })
+
+  describe('POST /comment/:commentId/dislike', () => {
+    it('should not be allowed to dislike a comment that was not liked by the user', async () => {
+      const res = await request
+        .post(`/comment/${comment._id}/dislike`)
+        .set('Authorization', `Bearer ${token2}`)
+      const updatedComment = await Comment.findById(comment._id)
+      expect(res.status).toBe(400)
+      expect(updatedComment.likedBy).toHaveLength(1)
+    })
+
+    it('should dislike a comment', async () => {
+      const res = await request
+        .post(`/comment/${comment._id}/dislike`)
+        .set('Authorization', `Bearer ${token}`)
+      const updatedComment = await Comment.findById(comment._id)
+      expect(res.status).toBe(204)
+      expect(updatedComment.likedBy).toHaveLength(0)
+    })
+  })
+
   describe('DELETE /comment/:commentId', () => {
     it('should not delete a comment created by another user', async () => {
       const res = await request
@@ -84,26 +125,6 @@ describe('Comments API test', () => {
       const commentWasDeleted = !(await Comment.findById(comment._id))
       expect(res.status).toBe(204)
       expect(commentWasDeleted).toBe(true)
-    })
-  })
-
-  describe('POST /comment/:commentId/like', () => {
-    it('should like a comment', async () => {
-
-    })
-
-    it('should not be allowed to like a comment twice', async () => {
-
-    })
-  })
-
-  describe('POST /comment/:commentId/dislike', () => {
-    it('should dislike a comment', async () => {
-
-    })
-
-    it('should not be allowed to dislike a comment that was not liked by the user', async () => {
-
     })
   })
 })
