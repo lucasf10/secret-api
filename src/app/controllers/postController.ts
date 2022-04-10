@@ -155,6 +155,10 @@ router.post('/', async (req: Request, res: Response): Promise<Response> => {
       city
     })
 
+    post.createdBy = undefined
+    post.createdAt = undefined
+    post.__v = undefined
+
     return res.status(201).send({ post })
   } catch (err) {
     console.log(err)

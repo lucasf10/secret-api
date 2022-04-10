@@ -1,5 +1,4 @@
-import mongoose from '@database/index'
-import { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 import PostType from '../types/Post'
 import { LocationSchema } from './common'

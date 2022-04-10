@@ -7,15 +7,18 @@ import postController from '@controllers/postController'
 import commentController from '@controllers/commentController'
 import userController from '@controllers/userController'
 import firebaseConfig from '@config/firebase.json'
+import { connectDB } from '@database/index'
 
 const PORT: number = 3000
 const HOST: string = '0.0.0.0'
+
+if (process.env.NODE_ENV !== 'test') connectDB()
 
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(firebaseConfig as ServiceAccount)
 })
 
-const app: Express = express()
+export const app: Express = express()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,4 +32,4 @@ app.get('/', (req: Request, res: Response): Response => {
   return res.status(200).send('Server is up!')
 })
 
-app.listen(PORT, HOST)
+export const server = app.listen(PORT, HOST)

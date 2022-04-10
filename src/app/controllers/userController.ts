@@ -1,7 +1,9 @@
 import express, { Request, Response, Router, Express } from 'express'
+import authMiddleware from '../middlewares/auth'
 import User from '@models/user'
 
 const router: Router = express.Router()
+router.use(authMiddleware)
 
 router.post('/:userId/set_firebase_token', async (req: Request, res: Response): Promise<Response> => {
   try {
