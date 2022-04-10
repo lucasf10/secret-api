@@ -137,8 +137,7 @@ describe('Post API test', () => {
       expect(res.status).toBe(204)
       expect(updatedPostVV.likeAmount).toBe(1)
       expect(updatedUser.likedPosts.length).toBe(1)
-
-      // Check if its in users list as well
+      expect(updatedUser.likedPosts).toContainEqual(updatedPostVV._id)
     })
 
     it('should not be allowed to like a post twice', async () => {
@@ -161,8 +160,6 @@ describe('Post API test', () => {
       expect(res.status).toBe(204)
       expect(updatedPostVV.likeAmount).toBe(0)
       expect(updatedUser.likedPosts.length).toBe(0)
-
-      // Check if its in users list as well
     })
 
     it('should not be allowed to dislike a post that was not liked by the user', async () => {
