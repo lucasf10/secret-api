@@ -2,6 +2,7 @@ import User from '@models/user'
 import UserType from 'src/app/types/User'
 import supertest from 'supertest'
 import { app } from '../../index'
+import { NEW_USER_DATA_1 } from '../utils/constants'
 
 const request = supertest(app)
 describe('Users API test', () => {
@@ -9,13 +10,7 @@ describe('Users API test', () => {
   let user: UserType
 
   beforeAll(async () => {
-    const userData = {
-      email: 'registered@mail.com',
-      username: 'registered',
-      password: '123456'
-    }
-
-    const resUser1 = await request.post('/auth/register').send(userData)
+    const resUser1 = await request.post('/auth/register').send(NEW_USER_DATA_1)
     token = resUser1.body.token
     user = resUser1.body.user
   })

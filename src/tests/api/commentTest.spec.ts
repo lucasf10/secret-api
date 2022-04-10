@@ -6,6 +6,13 @@ import Post from '@models/post'
 import CommentType from 'src/app/types/Comment'
 import Comment from '@models/comment'
 import { Types } from 'mongoose'
+import {
+  NEW_USER_DATA_1,
+  NEW_USER_DATA_2,
+  NEW_POST_DATA_1,
+  NEW_POST_DATA_2,
+  NEW_POST_DATA_3
+} from '../utils/constants'
 
 const request = supertest(app)
 
@@ -16,35 +23,14 @@ describe('Comments API test', () => {
   let post: PostType
   let comment: CommentType
 
-  const newUserData1 = {
-    username: 'test_user',
-    email: 'user@test.com',
-    password: 'password'
-  }
-
-  const newUserData2 = {
-    username: 'test_user_2',
-    email: 'mail@test.com',
-    password: 'password'
-  }
-
-  const newPostData = {
-    text: 'Text',
-    colorCode: 'red',
-    location: {
-      coordinates: [-20.526171, -40.377800]
-    },
-    textColor: '#000000'
-  }
-
   beforeAll(async () => {
-    const resUser1 = await request.post('/auth/register').send(newUserData1)
-    const resUser2 = await request.post('/auth/register').send(newUserData2)
+    const resUser1 = await request.post('/auth/register').send(NEW_USER_DATA_1)
+    const resUser2 = await request.post('/auth/register').send(NEW_USER_DATA_2)
     user1 = resUser1.body.user
     token = resUser1.body.token
     token2 = resUser2.body.token
 
-    post = await Post.create({ ...newPostData, createdBy: user1._id, city: 'Vila Velha' })
+    post = await Post.create({ ...NEW_POST_DATA_1, createdBy: user1._id, city: 'Vila Velha' })
   })
 
   describe('POST /comment', () => {
