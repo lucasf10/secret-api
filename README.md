@@ -8,15 +8,20 @@ For the React Native application that consumes this API, you should check the [s
 
 ## How to run this API
 
-1. Create your own **.env.local** file based on **.env.example**
+1. Create your own **.env** file based on **.env.example**
 
-2. Install all dependencies with yarn:
+2. Configure a firebase account and place the firebase.json file in:
+```bash
+src/config
+```
+
+3. Install all dependencies with yarn:
 
 ```bash
 yarn
 ```
 
-3. Start docker:
+4. Start docker:
 
 ```bash
 make up
